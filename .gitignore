@@ -3,3 +3,5 @@ TunTapTest/TunTapTest/Debug/
 *.opensdf
 *.filters
 TunTapTest/test/Debug/
+TunTapTest/UpgradeLog.htm
+*.sdf

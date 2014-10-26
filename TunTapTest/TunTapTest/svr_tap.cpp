@@ -129,7 +129,7 @@ string get_tuntap_ComponentId()
 	return ret;
 }
 
-HANDLE open_tun()
+HANDLE open_tun(char *ip , char *netmask)
 {
 	string component_id = get_tuntap_ComponentId();
 	char device_path[256] = {0};
@@ -162,7 +162,18 @@ HANDLE open_tun()
 		return NULL;
 	}
 
-	int configtun[3] = {0x01000b0a, 0x00000b0a, 0x0000ffff}; // IP, NETWORK, MASK
+	int configtun[3] = {0};// {0x01000b0a, 0x00000b0a, 0x0000ffff}; // IP, NETWORK, MASK
+	configtun[0] = inet_addr(ip);
+	configtun[1] = inet_addr(ip);
+	char *p = (char*)(configtun+1);
+	*(p+3) = 0;
+	configtun[2] = inet_addr(netmask);
+	for(int i = 0; i < sizeof(configtun); i++)
+	{
+		printf("%02x ", (uint8)*((char*)configtun+i));
+	}
+	printf("\n");
+
 	status = DeviceIoControl(handle,
 		TAP_CONTROL_CODE(10, 0), // TAP_IOCTL_CONFIG_TUN
 		configtun,
@@ -350,12 +361,17 @@ UdpRecvThread g_oUdpRecv;
 int main(int argc, const char** argv)
 {
 	if (argc != 3) {
-		printf("  %s <local> <remote>\n", argv[0]);
+		printf("  %s <tap device's ip> <tap device's netmask>\n", argv[0]);
 		return 0;
 	}
     
-    strncpy_s(g_strLocal, argv[1], strlen(argv[1]));
-    strncpy_s(g_strRemote, argv[2], strlen(argv[2]));
+    //strncpy_s(g_strLocal, argv[1], strlen(argv[1]));
+    //strncpy_s(g_strRemote, argv[2], strlen(argv[2]));
+
+	char ip[100] = {0};
+	char netmask[100] = {0};
+	strncpy_s(ip, argv[1], strlen(argv[1]));
+	strncpy_s(netmask, argv[2], strlen(argv[2]));
     
 	if(initNet() < 0)
 	{
@@ -363,7 +379,7 @@ int main(int argc, const char** argv)
 		return 0;
 	}
 
-	HANDLE hTun = open_tun();
+	HANDLE hTun = open_tun(ip, netmask);
 
     if (hTun == NULL) {
         return 0;
@@ -380,4 +396,5 @@ int main(int argc, const char** argv)
     while (1) {
         sys_msleep(1000);
     }
+	return 0;
 }

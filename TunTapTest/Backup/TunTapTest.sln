@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TunTapTest", "TunTapTest\TunTapTest.vcxproj", "{31194E8D-DB7F-4A47-BA8E-DCC5EA3B0ED8}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TunTapTest", "TunTapTest\TunTapTest.vcproj", "{31194E8D-DB7F-4A47-BA8E-DCC5EA3B0ED8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{30D4092A-CC53-4BE0-8908-04E60EB5B352}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{30D4092A-CC53-4BE0-8908-04E60EB5B352}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
