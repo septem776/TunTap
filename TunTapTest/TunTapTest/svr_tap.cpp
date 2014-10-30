@@ -133,7 +133,7 @@ HANDLE open_tun(char *ip , char *netmask)
 {
 	string component_id = get_tuntap_ComponentId();
 	char device_path[256] = {0};
-	sprintf_s(device_path, sizeof(device_path), "\\\\.\\%s.tap", component_id.c_str());
+	sprintf_s(device_path, sizeof(device_path), "\\\\.\\Global\\%s.tap", component_id.c_str());
 	HANDLE handle = CreateFile(	device_path,
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -248,6 +248,7 @@ int UdpSendThread::ThreadFunc()
     while (1) {
         DWORD nLen;
 
+		ResetEvent(_overlappedRx.hEvent);
 		int ret = ReadFile(_handle,
 					_achData,
 					MSG_BUFF_LEN,
@@ -360,13 +361,13 @@ UdpRecvThread g_oUdpRecv;
 
 int main(int argc, const char** argv)
 {
-	if (argc != 3) {
-		printf("  %s <tap device's ip> <tap device's netmask>\n", argv[0]);
+	if (argc != 5) {
+		printf("  %s <tap device's ip> <tap device's netmask> <local address> <remote address>\n", argv[0]);
 		return 0;
 	}
     
-    //strncpy_s(g_strLocal, argv[1], strlen(argv[1]));
-    //strncpy_s(g_strRemote, argv[2], strlen(argv[2]));
+    strncpy_s(g_strLocal, argv[3], strlen(argv[3]));
+    strncpy_s(g_strRemote, argv[4], strlen(argv[4]));
 
 	char ip[100] = {0};
 	char netmask[100] = {0};
@@ -385,14 +386,14 @@ int main(int argc, const char** argv)
         return 0;
     }
     
- //   if (openLocalUdp() < 0) {
- //       return 0;
-	//}
+    if (openLocalUdp() < 0) {
+        return 0;
+	}
 
     g_oUdpSend._handle = hTun;
     g_oUdpRecv._handle = hTun;
-    //g_oUdpSend.start();
-    //g_oUdpRecv.start();
+    g_oUdpSend.start();
+    g_oUdpRecv.start();
     while (1) {
         sys_msleep(1000);
     }
